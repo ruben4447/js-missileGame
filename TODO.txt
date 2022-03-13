@@ -1,0 +1,44 @@
+(1) Weapon Movement         [ SET: 05/05/2020; TARGET: 06/04/2020; COMPLETED: 06/04/2020 ]
+    + Calculate movement (in pixels) per second
+    + Add routine to add event, execute, then remove event on completion (inc. update the file)
+
+(2) Weapon Impact           [ SET: 05/05/2020; TARGET: 07/04/2020; COMPLETED: 08/04/2020; ]
+    + Damage on nearby stuff in radius (inc. country health if not home region)
+    + Random chance that weapon is a dud (like 5%)  [ SCRAPPED ]
+
+(3) Weapon Target           [ SET: 05/05/2020; TARGET: 08/04/2020; COMPLETED: 10/04/2020  ]
+    + Actions tab - view weapons in transit
+    + Set weapon target
+    + Set time for launch, or specify 'LAUNCH NOW' (save time_launch in events.json. time_launch property is a timestamp)
+    + Countdown timer for cheduled missiles
+
+(4) UI Tidy-Ups             [ SET: 08/04/2020; TARGET: 08/04/2020; COMPLETED: 08/04/2020 ]
+    + Box info in #control_board
+    + Minimize useless info
+
+
+(5) Defences               [ SET: 12/04/2020; TARGET: 14/04/2020; COMPLETED: 14/04/2020 ]
+    + Defence missile (explodes enemy weapons in range)
+    + Silo cooldown after launching
+    + Make a weapon overview for each silo
+    + 'Defence post' to launch defence missiled (remove from ordinary silos) [price: 1,000,000]
+    + Implement weapon radii (use logic in GameEvent)
+
+(6) Help        [ SET: 13/04/2020; TARGET: < ONGOING >; COMPLETED: < ONGOING > ]
+    + Help class
+    + Basic help (country list, weapon specs, keybindings, getting started etc...)
+
+Other Things
+    + [ DONE ] Make events call methods of an Events.Event() instance, instead of static methods in Events()
+    + [ DONE ] silos only store weapons that they've got in the 'contents' array
+    + [ DONE ] Check for home region population <= 0 (win)
+    + [ DONE ] When a silo is hit, each missile has an x% chance of being lost (window.gamevars.silo_weapon_loss)
+    + Can move missiles between silos (takes prep time / movement time). If in blast range, can still be destroyed
+    + [ DONE ] Content of message box is saved
+    + [ DONE ] Can no longer see enemy events
+    + [ DONE ] GameEvents are marked as done ON INITIATION rather than completion. Also add milliseconds to event IDs to avoid confusion
+    + If any player looses focus, pause everything
+
+Optimizations:
+    + [ DONE ] Load sound using XMLHttp then create repository, so sound doesn't need to be loaded again every play (PlaySound)
+    + < POSTPONED > Combine some JavaScript files to reduce HTTP requests       COMMENTS: maybe after production

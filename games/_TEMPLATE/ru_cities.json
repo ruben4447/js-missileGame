@@ -1,0 +1,13 @@
+{
+	"owner" : "",
+	"moscow" : {"population":"11500000"},
+	"saint_petersburg" : {"population":"4880000"},
+	"novosibirsk" : {"population":"1470000"},
+	"nyurba" : {"population":"10157"},
+	"chatanga" : {"population":"4502"},
+	"samara" : {"population":"1164685"},
+	"omsk" : {"population":"1140000"},
+	"bilibino" : {"population":"5592"},
+	"chelyabinsk" : {"population":"1077174"},
+	"rostov-on-don" : {"population":"1089900"}
+}

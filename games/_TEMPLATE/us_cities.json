@@ -1,0 +1,13 @@
+{
+	"owner" : "",
+	"new_york_city" : {"population":"8550405"},
+	"miles_city" : {"population":"8510"},
+	"chicago" : {"population":"2720546"},
+	"houston" : {"population":"2296224"},
+	"philadelphia" : {"population":"1567442"},
+	"phoenix" : {"population":"1563025"},
+	"denver" : {"population":"716492"},
+	"san_diego" : {"population":"1392928"},
+	"dallas" : {"population":"1300092"},
+	"san_jose" : {"population":"1026908"}
+}

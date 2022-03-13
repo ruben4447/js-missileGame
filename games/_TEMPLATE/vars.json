@@ -1,0 +1,29 @@
+{
+	"general" : {
+		"id" : 0,
+		"name" : "",
+		"password" :  "",
+		"join_code" : ""
+	},
+	"winner" : null,
+	"player_1" : {
+		"money" : 5000000,
+		"income" : 0,
+		"population_100p" : 0,
+		"population" : 0,
+		"region" : "",
+		"colour" : "",
+		"ally_colour" : "",
+		"allies" : []
+	},
+	"player_2" : {
+		"money" : 5000000,
+		"income" : 0,
+		"population" : 0,
+		"population_100p" : 0,
+		"region" : "",
+		"colour" : "",
+		"ally_colour" : "",
+		"allies" : []
+	}
+}
