@@ -1,0 +1,24 @@
+{
+  "name": "js-missilegame",
+  "version": "1.0.0",
+  "description": "Basic missile defence game between US and USSR",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruben4447/js-missileGame.git"
+  },
+  "author": "Ruben Saunders",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ruben4447/js-missileGame/issues"
+  },
+  "homepage": "https://github.com/ruben4447/js-missileGame#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "socket.io": "^4.4.1",
+    "uuid": "^8.3.2"
+  }
+}

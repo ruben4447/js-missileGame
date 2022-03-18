@@ -1,0 +1,18 @@
+body {
+	font-family: Arial, Calibri;
+}
+a { color: mediumblue; }
+.error {
+	color: crimson;
+	border: 1px solid tomato;
+	background: rgba(200, 50, 50, 0.35);
+	padding: 4px;
+	font-size: 0.8em;
+}
+.msg {
+	color: mediumblue;
+	border: 1px solid lightblue;
+	background: rgba(50, 50, 200, 0.35);
+	padding: 4px;
+	font-size: 0.8em;
+}
