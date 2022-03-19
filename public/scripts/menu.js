@@ -22,4 +22,6 @@ window.addEventListener("load", function () {
 
   document.getElementById("link-create").setAttribute("href", "/create-game.html?" + token);
   document.getElementById("link-logout").setAttribute("href", "/logout/" + token);
+  document.getElementById("link-delete").setAttribute("href", "javascript:void(0)");
+  document.getElementById("link-delete").addEventListener('click', () => confirm("Delete account? This cannot be undone.") && (location.href = "/delete/" + token));
 });

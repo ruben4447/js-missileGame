@@ -15,6 +15,8 @@ window.addEventListener('load', () => {
         alert('Unauthorised Access.');
       } else if (key === 'logout') {
         alert('Logged out successfully.');
+      } else if (key === 'deleted') {
+        alert(`Deleted account ${params.get("du")}`);
       }
     });
 
