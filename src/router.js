@@ -39,11 +39,9 @@ router.get("/delete-game/:token/:gameId", async (req, res, next) => {
     if (game) {
       ok = true;
       console.log(`[DELETE] Delete game id=${game.id}; name=${game.name}`);
-      ok = await game.deleteData();
-      if (ok) {
-        Game.all.delete(game.name);
-        res.redirect("/menu.html?" + req.params.token);
-      }
+      await game.deleteData();
+      Game.all.delete(game.name);
+      res.redirect("/menu.html?" + req.params.token);
     }
 
   }

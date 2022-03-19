@@ -68,20 +68,20 @@ class Game {
     // Setup US cities
     for (let city in data.us_cities) {
       if (typeof data.us_cities[city] === 'object') {
-        data.vars[US].population += data.us_cities[city].population;
-        data.us_cities[city].population_100p += data.us_cities[city].population;
+        data.vars[US].population += +data.us_cities[city].population;
+        data.us_cities[city].population_100p = +data.us_cities[city].population;
       }
     }
-    data.vars[US].population_100p = data.vars[US].population;
+    data.vars[US].population_100p = +data.vars[US].population;
 
     // Setup RU cities
     for (let city in data.ru_cities) {
       if (typeof data.ru_cities[city] === 'object') {
-        data.vars[RU].population += data.ru_cities[city].population;
-        data.ru_cities[city].population_100p += data.ru_cities[city].population;
+        data.vars[RU].population += +data.ru_cities[city].population;
+        data.ru_cities[city].population_100p = +data.ru_cities[city].population;
       }
     }
-    data.vars[RU].population_100p = data.vars[RU].population;
+    data.vars[RU].population_100p = +data.vars[RU].population;
 
     return GAME;
   }

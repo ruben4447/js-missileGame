@@ -4,7 +4,7 @@ window.addEventListener("load", () => {
 
   socket.on("alert", text => alert(text));
   socket.on("redirect", url => location.href = url);
-  socket.on("goto-game", () => location.href = `/game.html?${token}?id=${gameID}`);
+  socket.on("goto-game", () => location.href = `/game.html?${token}&id=${gameID}`);
   socket.on("id-ok", game => {
     document.getElementById("link-back").href = "/menu.html?" + token;
 

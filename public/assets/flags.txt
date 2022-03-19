@@ -1,0 +1,1 @@
+URL: https://cdn.jsdelivr.net/gh/hjnilsson/country-flags@master/svg/<code>.svg

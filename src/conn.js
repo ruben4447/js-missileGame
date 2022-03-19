@@ -39,6 +39,10 @@ class Connection {
             this.type = "join-game";
             response = this._initJoinGame(params);
             break;
+          case 4: // Game page
+            this.type = "game";
+            response = await this._initPlayGame(params);
+            break;
           default:
             this.log("<id>: unknown location " + loc);
             ok = false;
@@ -144,6 +148,55 @@ class Connection {
       });
 
       return { name: game.name, id: game.id, state: game.state, icon: utils.getStateSymbol(game.state), winner: game.data.vars.winner };
+    }
+  }
+
+  /** Init: game.html */
+  async _initPlayGame(params) {
+    console.log("Init Play Game")
+    const game = Game.getFromID(params.gameID);
+    if (game === undefined || !(params.token === game.player_1 || params.token === game.player_2) || (game.state === "closed" && params.token !== game.player_1)) {
+      return null;
+    } else {
+      const isAdmin = params.token === game.player_1;
+
+      // LEAVE GAME
+      this.socket.on("disconnect", async () => {
+        if (this.token === game.player_1) {
+          // without admin, game is inactive
+          game.state = "closed";
+          game.player_1 = null;
+        } else {
+          game.state = "open";
+          game.player_2 = null;
+        }
+      });
+
+      return {
+        id: game.id,
+        isAdmin, // Player1 is admin of the game
+        isPaused: game.data.ispaused.player_1 || game.data.ispaused.player_2,
+        pausedPlayer: game.data.ispaused.player_1 ? "player_1" : game.data.ispaused.player_2 ? "player_2" : null,
+        data: {
+          state: game.state,
+          lastState: null,
+          vars: game.data.vars,
+          silos: { player_1: game.data["silos-player_1"], player_2: game.data["silos-player_2"] },
+          defence_posts: { player_1: game.data["defence_posts-player_1"], player_2: game.data["defence_posts-player_2"] },
+          countries: game.data.countries,
+          events: game.data.events,
+          me: game.data.vars[isAdmin ? "player_1" : "player_2"],
+          enemy: game.data.vars[isAdmin ? "player_2" : "player_1"],
+          cities: {
+            RU: game.data.ru_cities,
+            US: game.data.us_cities,
+          },
+        },
+        me: isAdmin ? "player_1" : "player_2",
+        enemy: isAdmin ? "player_2" : "player_1",
+        message_old: game.data.msg_history,
+        svg_map: await utils.fread("public/assets/svg_map.svg"),
+      };
     }
   }
 
