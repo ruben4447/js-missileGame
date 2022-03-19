@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title>MAD Missile Destruction | Create Game</title>
+    <link rel="stylesheet" href="styles/indexstyles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <center>
+            <div id="div-create-game">
+              <h1>Create Game</h1>
+              <a class="link-menu">Back to Menu</a>
+              <br>
+              <p>Your new game needs a name</p>
+              <input type="text" id="input-name" placeholder="Name" required='required' autocomplete='off' />
+              <p>Each game requires a password so others cannot log in to it</p>
+              <input type="password" placeholder="Password" id="input-password" required="required" />
+              <p>A multiplayer join code will be provided after creation</p>
+              <br>
+              <button id="btn-create">Create</button>
+            </div>
+            <div id="div-created-game">
+              <h1>Created Game</h1>
+              <p>Game Name: <span id="span-name"></span></p>
+              <p>This code will allow another player to join a game:<br>
+              Game Join Code: <span id="span-code"></span></p>
+              <br><br>
+              <a class="link-menu">Back to Menu</a>
+            </div>
+        </center>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="scripts/create-game.js"></script>
+</body>
+</html>

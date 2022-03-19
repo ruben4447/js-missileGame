@@ -5,22 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <title>MAD Missile Destruction | Create Account</title>
     <link rel="stylesheet" href="styles/indexstyles.css">
+    <title>MAD Missile Destruction | Menu</title>
 </head>
 <body>
     <div class="wrapper">
         <center>
-            <h1>Create Account</h1>
-            <input type="text" placeholder="Username" id="username" />
-            <br><br>
-            <input type="password" placeholder="Password" id="password" />
-            <br><br>
-            <button id="create">Create Account</button>
+            <h1>Menu</h1>
+            <p>Logged in as: <span class="username"></span></p>
+            <hr>
+            <p><a id="link-create">Create Game</a> | <a id="link-logout">Logout</a></p>
+            <h3>Available Games &mdash; <span id="game-count"></span></h3>
+            <ul id="game-list"></ul>
         </center>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="scripts/create-account.js"></script>
+    <script src="scripts/menu.js"></script>
 </body>
 </html>
