@@ -1,7 +1,7 @@
 class DocumentEvents {
 	static Keys() {
 		// Keybindings
-		document.body.addEventListener('keydown', function(event) {
+		document.body.addEventListener('keydown', function (event) {
 			switch (event.keyCode) {
 				case 13:
 					// 'Enter'		-> proceed with action; depends on Action.PopupViewing
@@ -30,48 +30,48 @@ class DocumentEvents {
 					break;
 			}
 		});
-	};
+	}
 }
 
 class SiloEvents {
 	static AddListeners() {
 		for (let el of Constants.TARGET.querySelectorAll('.silo')) {
-			el.addEventListener('mouseover', function(event){
+			el.addEventListener('mouseover', (event) => {
 				SiloEvents.HoverOn(el);
 			});
-			el.addEventListener('mouseleave', function(event){
+			el.addEventListener('mouseleave', (event) => {
 				SiloEvents.HoverOff(el);
 			});
-			el.addEventListener('mouseup', function(event){
+			el.addEventListener('mouseup', (event) => {
 				SiloEvents.ClickOn(el.getAttribute('data-id'));
 			});
 		}
 		return 0;
-	};
+	}
 
 	static HoverOn(elem) {
 		let id = elem.getAttribute('data-id');
 		document.getElementById('info_map_hover').innerHTML = '<div class="info_map_hover_content"><center><b>Silo #' + id + '</b></center>' + Map.SiloHtml(id) + '</div>';
 		return 0;
-	};
+	}
 
 	static HoverOff(elem) {
 		document.getElementById('info_map_hover').innerHTML = '';
 		return 0;
-	};
+	}
 
 	static ClickOn(id) {
 		Active.PopupViewing = 'silo';
 		ControlBoardEvents.OpenPopup('Silo #' + id, ControlBoard.GetSiloInfo(id));
 		return 0;
-	};
+	}
 
 	// 'Build Silo' button has been clicked
 	static ClickBuildSilo() {
 		document.getElementById('cancel_build_silo').innerHTML = Action.CancelActionBtn('cancel_build_silo', 'Abort Construction');
 		Action.BuildSilo();
 		return 0;
-	};
+	}
 
 	// Click on an abbreviation in 'inverntory' overview
 	static ClickAbbr(silo, weapon) {
@@ -80,14 +80,14 @@ class SiloEvents {
 		Active.LaunchingCount = 1;
 		ControlBoardEvents.OpenPopup('Launch Sequence: Initiated', ControlBoard.LaunchSequenceForm());
 		return 0;
-	};
+	}
 
 	// Launch missile (initiate launch button in silo info)
 	static ClickLaunch(silo) {
 		Active.LaunchingFrom = silo;
 		ControlBoardEvents.OpenPopup('Launch Sequence: Start', ControlBoard.LaunchSequenceForm());
 		return 0;
-	};
+	}
 
 	// From initiate launch screen; select missile
 	static SelectLaunchWeapon(weapon) {
@@ -95,57 +95,57 @@ class SiloEvents {
 		Active.LaunchingCount = 1;
 		ControlBoardEvents.OpenPopup('Launch Sequence: Initiated', ControlBoard.LaunchSequenceForm());
 		return 0;
-	};
+	}
 
 	// From initiate launch screen; select weapon count
 	static SelectLaunchCount(count) {
 		Active.LaunchingCount = parseInt(count);
 		ControlBoardEvents.OpenPopup('Launch Sequence: Initiated', ControlBoard.LaunchSequenceForm());
 		return 0;
-	};
-};
+	}
+}
 
 // For defence posts
 class DefenceEvents {
 	static AddListeners() {
 		for (let el of Constants.TARGET.querySelectorAll('.defence_post')) {
-			el.addEventListener('mouseover', function(event){
+			el.addEventListener('mouseover', function (event) {
 				DefenceEvents.HoverOn(el);
 			});
-			el.addEventListener('mouseleave', function(event){
+			el.addEventListener('mouseleave', function (event) {
 				DefenceEvents.HoverOff(el);
 			});
-			el.addEventListener('mouseup', function(event){
+			el.addEventListener('mouseup', function (event) {
 				DefenceEvents.ClickOn(el.getAttribute('data-id'));
 			});
 		}
 		return 0;
-	};
+	}
 
 	static HoverOn(elem) {
 		let id = elem.getAttribute('data-id');
 		let html = Map.DefencePostHtml(id);
 		document.getElementById('info_map_hover').innerHTML = '<div class="info_map_hover_content"><center><b>Defence Post #' + id + '</b></center>' + html + '</div>';
 		return 0;
-	};
+	}
 
 	static HoverOff(elem) {
 		document.getElementById('info_map_hover').innerHTML = '';
 		return 0;
-	};
+	}
 
 	static ClickOn(id) {
 		Active.PopupViewing = 'defence_post';
 		Active.DefencePostViewing = id;
 		ControlBoardEvents.OpenPopup('Defence Post #' + id, ControlBoard.GetDefencePostInfo(id));
 		return 0;
-	};
+	}
 	// 'Build Defence Post' button has been clicked
 	static ClickBuildDefence() {
 		document.getElementById('cancel_build_defence').innerHTML = Action.CancelActionBtn('cancel_build_defence', 'Abort Construction');
 		Action.BuildDefence();
 		return 0;
-	};
+	}
 
 	// Click on 'launch defence missile'
 	static Launch() {
@@ -158,12 +158,12 @@ class DefenceEvents {
 		if (missiles.length < 1) alert("Cannot launch defence missile: no defence post with a defence missile could be found");
 		else {
 			document.getElementById('cancel_launch_defence').innerHTML = Action.CancelActionBtn('cancel_launch_defence', 'Cancel');
-			document.getElementById('defence_launch_type').setAttribute('disabled', true)
+			document.getElementById('defence_launch_type').setAttribute('disabled', "disabled");
 			Active.LaunchingFromDefence = true;
 			Active.LaunchingType = type;
 			Action.Current = ActionState.PickTarget;
 			Map.SetState('aim');
-			for (let i = 0; i <  window.data.defence_posts[window.me].length; i += 1)
+			for (let i = 0; i < window.data.defence_posts[window.me].length; i += 1)
 				Constants.TARGET.appendChild(create_svg_element('circle', {
 					cx: window.data.defence_posts[window.me][i].x,
 					cy: window.data.defence_posts[window.me][i].y,
@@ -173,41 +173,41 @@ class DefenceEvents {
 				}));
 		}
 		return 0;
-	};
+	}
 }
 
 class CityEvents {
 	static AddListeners() {
 		for (let el of document.querySelectorAll('svg circle.city')) {
-			el.addEventListener('mouseover', function(event){
+			el.addEventListener('mouseover', function (event) {
 				CityEvents.HoverOn(el);
 			});
-			el.addEventListener('mouseleave', function(event){
+			el.addEventListener('mouseleave', function (event) {
 				CityEvents.HoverOff(el);
 			});
-			el.addEventListener('mouseup', function(event){
+			el.addEventListener('mouseup', function (event) {
 				CityEvents.ClickOn(el);
 			});
 		}
-	};
+	}
 
 	static HoverOn(elem) {
 		let html = Map.CityHtml(elem.getAttribute('data-region'), elem.getAttribute('data-name'));
 		document.getElementById('info_map_hover').innerHTML = '<div class="info_map_hover_content"><center><b>City</b></center>' + html + '</div>';
 		return 0;
-	};
+	}
 
 	static HoverOff(elem) {
 		document.getElementById('info_map_hover').innerHTML = '';
 		return 0;
-	};
+	}
 
 	static ClickOn(elem) {
 		let cid = elem.getAttribute('data-region'),
 			name = elem.getAttribute('data-name');
 		ControlBoardEvents.OpenPopup('City', ControlBoard.GetCityInfo(cid, name));
 		return 0;
-	};
+	}
 }
 
 class MapEvents {
@@ -224,12 +224,12 @@ class MapEvents {
 			case ActionState.BuildSilo:
 				if (!onland) {
 					alert("Cannot build silo in the sea or in non-open land! (e.g. on a silo, on a city)");
-				// Check if land clicked on has data-id of window.me's territory
+					// Check if land clicked on has data-id of window.me's territory
 				} else if (event.target.getAttribute('data-id') != window.data.me.region && window.data.me.allies.indexOf(cid) === -1) {
-					alert("Cannot build your silo in " + window.countries[cid]['name'] + ": they aren't an ally");
+					alert("Cannot build your silo in " + window.countries[cid].name + ": they aren't an ally");
 				} else {
-					Sounds.Play('beep')
-					Action.Current = ActionState.None
+					Sounds.play('beep');
+					Action.Current = ActionState.None;
 					Map.SetState('idle');
 					Action.BuildSilo(coords, cid);
 				}
@@ -237,18 +237,18 @@ class MapEvents {
 			case ActionState.BuildDefence:
 				if (!onland) {
 					alert("Cannot build defence post in the sea or in non-open land! (e.g. on a silo, on a city)");
-				// Check if land clicked on has data-id of window.me's territory
+					// Check if land clicked on has data-id of window.me's territory
 				} else if (event.target.getAttribute('data-id') != window.data.me.region && window.data.me.allies.indexOf(cid) === -1) {
-					alert("Cannot build your defence post in " + window.countries[cid]['name'] + ": they aren't an ally");
+					alert("Cannot build your defence post in " + window.countries[cid].name + ": they aren't an ally");
 				} else {
-					Sounds.Play('beep')
-					Action.Current = ActionState.None
+					Sounds.play('beep');
+					Action.Current = ActionState.None;
 					Map.SetState('idle');
 					Action.BuildDefence(coords, cid);
 				}
 				break;
 			case ActionState.PickTarget:
-				Sounds.Play('beep')
+				Sounds.play('beep');
 				Action.Current = ActionState.None;
 				Map.SetState('idle');
 				Active.TargetEvent = event;
@@ -259,49 +259,49 @@ class MapEvents {
 				if (onland) ControlBoard.LoadCountryInfo(cid);
 				break;
 		}
-	};
+	}
 
 	// When mouse clicks somewhere on the map...
 	static InitClick() {
-		Constants.TARGET.addEventListener('mouseup', function(event) {
+		Constants.TARGET.addEventListener('mouseup', function (event) {
 			MapEvents.Click(event, false);
 		});
-	};
+	}
 
 	// When mouse moves over non-country (sea, city, silo) ...
 	static InitOver() {
-		Constants.TARGET.addEventListener('mouseover', function(event) {
+		Constants.TARGET.addEventListener('mouseover', function (event) {
 			// If hovering over city (etc...) do not change country info
 			if (Map.GetState() != 'hover') document.getElementById('info_country_hover').innerHTML = '';
 		});
-	};
+	}
 
 	// When mouse clicks on a country...
 	static InitClickCountry() {
 		for (let el of document.querySelectorAll('svg .country')) {
-			el.addEventListener('mouseup', function(event) {
+			el.addEventListener('mouseup', function (event) {
 				MapEvents.Click(event, true);
 			});
 		}
-	};
+	}
 
 	// When mouse moves over a country...
 	static InitOverCountry() {
 		for (let el of document.querySelectorAll('svg .country')) {
-			el.addEventListener('mouseover', function(event) {
+			el.addEventListener('mouseover', function (event) {
 				event.stopPropagation();
 				if (window.isAdmin) eventMouseMove(event);
 				MapEvents.OverCountry(event.target);
 			});
 		}
-	};
+	}
 
 	// Get country info when hover over a country (provide element) ...
 	static OverCountry(el) {
 		let code = el.getAttribute('data-id');
 		document.getElementById('info_country_hover').innerHTML = '<div class="info_map_hover_content"><center><img class="flag_title" src="' + Map.GetFlagURL(code) + '" /><br>' + code + '<br></center><meter min="0" low="30" high="75" optimum="90" max="100" value="' + window.data.countries[code].health + '"></meter></div>';
 		return 0;
-	};
+	}
 }
 
 // Events on control board
@@ -312,7 +312,7 @@ class ControlBoardEvents {
 		document.getElementById('popup_control_board_title').innerHTML = title;
 		document.getElementById('popup_control_board_content').innerHTML = content;
 		return 0;
-	};
+	}
 
 	static ClosePopup(keypress = false) {
 		// Only close if no actions are in progress...
@@ -342,76 +342,77 @@ class ControlBoardEvents {
 		} else Active.PopupViewing = null;
 
 		return 0;
-	};
+	}
 
 	// Click on 'Get an Ally'
 	static ClickGetAlly() {
 		Action.GetAlly();
 		return 0;
-	};
+	}
 
 	// Click on 'Sever Ally'
 	static ClickSeverAlly(cid) {
 		Action.SeverAlly(cid);
 		return 0;
-	};
+	}
 
 	// Click on 'view weapon specs'
 	static ClickWeaponInfo() {
 		Active.PopupViewing = 'weapon';
 		ControlBoardEvents.OpenPopup('Weapon Specs', ControlBoard.WeaponSpecsMenu());
 		return 0;
-	};
+	}
 
 	// Click on weapon in 'weapon specs' window
 	static ClickWeaponSpecsFocused(weapon) {
 		Active.PopupViewing = 'weapon_focused';
 		ControlBoardEvents.OpenPopup(display(weapon), ControlBoard.WeaponSpecsFocused(weapon));
 		return 0;
-	};
+	}
 
 	// Click on 'Back: country list'
 	static ClickCountryList() {
 		Active.PopupViewing = 'country_list';
 		ControlBoardEvents.OpenPopup('Country List', ControlBoard.AllCountryList());
 		return 0;
-	};
+	}
 
 	// Click on 'Details' for 'events'
 	static ClickEventDetail() {
 		Active.PopupViewing = 'events';
 		ControlBoardEvents.OpenPopup('Events', ControlBoard.EventListDetail());
 		return 0;
-	};
+	}
 
 	// Click on 'More' when viewing detailed evtn list
 	static ClickEventFocused(eid) {
 		Active.PopupViewing = 'event_focused';
 		ControlBoardEvents.OpenPopup('Event ID ' + eid, ControlBoard.FocusedEventInfo(eid));
 		return 0;
-	};
+	}
 
 	// Click on 'view defence posts'
 	static ClickDefencePosts() {
 		Active.PopupViewing = 'defence_posts';
 		ControlBoardEvents.OpenPopup('Defence Posts', ControlBoard.DefencePostList());
 		return 0;
-	};
+	}
 
 	// Detailed ally information
 	static LoadAllies() {
 		Active.PopupViewing = 'allies';
 		ControlBoardEvents.OpenPopup('Allies', ControlBoard.AlliesDetail());
 		return 0;
-	};
+	}
 
 	// Routinely increase money due to income
 	static RoutineAddIncome() {
 		if (!Constants.ADD_INCOME) return 0;
 		window.data.me.money += window.data.me.income;
+		socket.emit("set-personal-data", { money: window.data.me.money });
 		ControlBoard.UpdateMoneyButtons();
 		return 0;
-	};
+	}
 
 	// Set new income/update income
 	static UpdateIncome() {
@@ -421,9 +422,10 @@ class ControlBoardEvents {
 		for (let ally of window.data.me.allies)
 			window.data.me.income += Calculations.GetAllyIncome(ally);
 
+		socket.emit("set-personal-data", { income: window.data.me.income });
 		ControlBoard.Money();
 		return window.data.me.income;
-	};
+	}
 
 	// In defence section of panel, click 'launch defence missile'
 	static LaunchDefence() {
@@ -437,7 +439,7 @@ class ControlBoardEvents {
 		// Pick target
 		Action.WeaponPickTarget();
 		return 0;
-	};
+	}
 }
 
 // For handling window.data.events  (e.g. weapon launching...)
@@ -457,49 +459,49 @@ class Events {
 			for (let i = 0; i < count; i += 1) {
 				let object = JSON.parse(JSON.stringify(original_object));  // Copy object
 				object.done = [false, false];  // Stores whether player_1 has done the event, and player_2 has done the event.
-				object.id = parseInt(Time.AddBits(object.time, i) + ((new Date).getMilliseconds() * (rand(1, 100))).toString());
+				object.id = parseInt(Time.AddBits(object.time, i) + (new Date().getMilliseconds() * (rand(1, 100))).toString());
 				object.time = Time.AddBits(object.time, i);
 				//console.log(dump(object))
 				window.data.events.push(object);
 			}
 		} else {
 			original_object.done = [false, false];  // Stores whether player_1 has done the event, and player_2 has done the event.
-			original_object.id = parseInt(Time.Now() + ((new Date).getMilliseconds() * (rand(1, 100))).toString());
+			original_object.id = parseInt(Time.Now() + (new Date().getMilliseconds() * (rand(1, 100))).toString());
 			window.data.events.push(original_object);
 		}*/
-		if (istype(args, 'array')){
+		if (istype(args, 'array')) {
 			for (let i = 0; i < args.length; i += 1) {
 				args[i].done = [false, false];
-				args[i].id = parseInt(Time.Now() + ((new Date).getMilliseconds() * (rand(1, 100))).toString());
+				args[i].id = parseInt(Time.Now() + (new Date().getMilliseconds() * (rand(1, 100))).toString());
 				window.data.events.push(args[i]);
 			}
 		} else {
 			args.done = [false, false];
-			args.id = parseInt(Time.Now() + ((new Date).getMilliseconds() * (rand(1, 100))).toString());
+			args.id = parseInt(Time.Now() + (new Date().getMilliseconds() * (rand(1, 100))).toString());
 			window.data.events.push(args);
 		}
 		Update.File(auth, 'events.json', window.data.events);
 		Update.Add('events.json', [2]);
 		return 0;
-	};
+	}
 
 	// Add event, take object (does not save to events.json)
 	static AddMe(args) {
 		if (istype(args, 'array') && args.length < 1) throw "ArgumentError: provided argument 'args', if array, msut be of length > 0";
-		if (istype(args, 'array')){
+		if (istype(args, 'array')) {
 			for (let i = 0; i < args.length; i += 1) {
 				args[i].done = [false, false];
-				args[i].id = parseInt(Time.Now() + ((new Date).getMilliseconds() * (rand(1, 100))).toString());
+				args[i].id = parseInt(Time.Now() + (new Date().getMilliseconds() * (rand(1, 100))).toString());
 				window.data.events.push(args[i]);
 			}
 		} else {
 			args.done = [false, false];
-			args.id = parseInt(Time.Now() + ((new Date).getMilliseconds() * (rand(1, 100))).toString());
+			args.id = parseInt(Time.Now() + (new Date().getMilliseconds() * (rand(1, 100))).toString());
 			window.data.events.push(args);
 		}
 		Events.Trigger();
 		return 0;
-	};
+	}
 
 	// Look for events which haven't been initiated into a GameEvent class
 	static Trigger() {
@@ -514,7 +516,7 @@ class Events {
 			}
 		}
 		return triggered;
-	};
+	}
 
 	// 'Clean' activity
 	static CleanActivity() {
@@ -524,7 +526,7 @@ class Events {
 		Active.LaunchingFromDefence = false;
 		Active.TargetEvent = null;
 		return 0;
-	};
+	}
 
 	// If line (launch path) extends past the target
 	static LineExtendsPast(klass) {
@@ -540,8 +542,8 @@ class Events {
 				return (coords[0] <= target[0] || coords[1] >= target[1]);
 			case 'UR':
 				return (coords[0] >= target[0] || coords[1] <= target[1]);
-		};
-	};
+		}
+	}
 
 	// Get waiting events inside a given silo
 	static GetEventsInSilo(silo) {
@@ -550,7 +552,7 @@ class Events {
 			if (Events.List[eid].from_user == window.me && Events.List[eid].from_silo == silo)
 				events.push(eid);
 		return events;
-	};
+	}
 
 	// Get a random event
 	// type (array) -> what type should the event be?
@@ -560,7 +562,7 @@ class Events {
 			if ((user == null || Events.List[eid].from_user == user) && (dump(type, true) != 'array' || type.length < 1 || type.indexOf(Events.List[eid].type) !== -1))
 				events.push(eid);
 		return (events.length > 0 ? randomChoice(events) : null);
-	};
+	}
 }
 
 class GameEventStates {
@@ -575,7 +577,7 @@ class GameEvent {
 
 		this.Init();
 		this.interval_id = setInterval(this.Wait.bind(this), window.gamevars.event_wait_time);	// So we can terminate the interval later
-	};
+	}
 
 	// Initiate info
 	Init() {
@@ -610,17 +612,16 @@ class GameEvent {
 				// Stores current pos of weapon
 				this.coords = [...this.from_coords];
 				/*
-					   /|
-				   d  /	|  dy
+						 /|
+					 d  /	|  dy
 					/___|
-					  dx
+						dx
 				 */
 				this.dx = this.target_coords[0] - this.coords[0];	// distance x
 				this.dy = this.target_coords[1] - this.coords[1];	// distance y
-				this.d = Math.sqrt((this.dx*this.dx) + (this.dy*this.dy));	// distance along slope (pythag)
+				this.d = Math.sqrt((this.dx * this.dx) + (this.dy * this.dy));	// distance along slope (pythag)
 				if (isNaN(this.d)) {
 					throw "EventError: d is NaN: Math.sqrt((" + this.dx + "*" + this.dx + ") + (" + this.dy + "*" + this.dy + "))";
-					return 0;
 				}
 
 				// Find  which dir the weapon is travelling
@@ -648,7 +649,7 @@ class GameEvent {
 				break;
 		}
 		return 0;
-	};
+	}
 
 	// While missile is waiting...
 	Wait() {
@@ -663,7 +664,7 @@ class GameEvent {
 			switch (this.type) {
 				case 'weapon':
 				case 'defence':
-					Sounds.Play('launch');
+					Sounds.play('launch');
 
 					// If clock exists...
 					if (document.getElementById('silo-clock-' + this.id) != null) {
@@ -679,7 +680,7 @@ class GameEvent {
 			// ^^ The scope of 'this' would change in setInterval to window. bind() makes sure the current scope of 'this' (i.e. THIS class instance) remains
 		}
 		return 0;
-	};
+	}
 
 	// Action
 	Action() {
@@ -701,7 +702,7 @@ class GameEvent {
 					y2: this.coords[1],
 					stroke: window.data.vars[this.from_user].weapon_colour,
 					//'stroke-dasharray': '2 5',
-					'stroke-width' : 2,
+					'stroke-width': 2,
 					fill: 'none',
 					'line-cap': 'round',
 					id: 'event-line-' + this.id
@@ -763,7 +764,7 @@ class GameEvent {
 				throw 'EventError: Action(): type is unrecognised (no related event handler for \'' + this.type + '\')';
 		}
 		return 0;
-	};
+	}
 
 	// When event is finished
 	Finished() {
@@ -812,16 +813,16 @@ class GameEvent {
 					if (Active.SiloViewing == this.from_silo) SiloEvents.ClickOn(this.from_silo);
 				}
 
-				if (!this.destroyed_enemies) ControlBoard.ShowMsg('<u>' + display(this.from_user) + '\'s ' + display(this.weapon) + '</u><br><small>Exploded on target, not hitting any enemy missiles.<br>The only thing it did succesfully was add to pollution levels! Boo.</small>', null, true)
+				if (!this.destroyed_enemies) ControlBoard.ShowMsg('<u>' + display(this.from_user) + '\'s ' + display(this.weapon) + '</u><br><small>Exploded on target, not hitting any enemy missiles.<br>The only thing it did succesfully was add to pollution levels! Boo.</small>', null, true);
 				Map.PulseExplosion(this.coords, window.defences[this.weapon].radius);
-				Sounds.Play('explosion_dm');
+				Sounds.play('explosion_dm');
 				if (Active.SiloViewing == this.from_silo) SiloEvents.ClickOn(this.from_silo);
 				break;
 			default:
 				throw 'EventError: Finished(): type is unrecognised (no related event terminator for \'' + this.type + '\')';
 		}
 		return 0;
-	};
+	}
 
 	// Like FInished, but called from outside. Completely stops event. like it never existed
 	Delete() {
@@ -853,16 +854,16 @@ class GameEvent {
 		}
 
 		return 0;
-	};
+	}
 
 	// Mark event as done in events.json
 	MarkAsDone() {
 		let http = new XMLHttpRequest();
 		let id = this.id;
 		http.open('POST', 'xmlhttp/event_done.php?auth=' + Constants.AUTH + '&player=' + window.me + '&eventID=' + this.id);
-		http.onload = function() {
+		http.onload = function () {
 			console.log('%c[!] Marked event #' + id + ' as done for our end', 'color:orange;');
 		};
 		http.send();
-	};
+	}
 }

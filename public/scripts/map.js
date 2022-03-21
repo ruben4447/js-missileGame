@@ -2,20 +2,20 @@ class Map {
 	// Get state attribute
 	static GetState() {
 		return Constants.TARGET.getAttribute('state');
-	};
+	}
 
 	// Set state attribute
 	static SetState(state) {
 		Constants.TARGET.setAttribute('state', state);
 		return 0;
-	};
+	}
 
 	// Draw a city to the map
 	static DrawCity(region, name) {
 		let coords = window.cities[region];
-		if (coords == null) throw "Error: cannot locate region '"+region+"' (in func draw_city)";
+		if (coords == null) throw "Error: cannot locate region '" + region + "' (in func draw_city)";
 		coords = coords[name];
-		if (coords == null)  throw "Error: cannot locate city '"+name+"' in region '"+region+"' (in func draw_city)";
+		if (coords == null) throw "Error: cannot locate city '" + name + "' in region '" + region + "' (in func draw_city)";
 
 		let element = create_svg_element('circle', {
 			cx: coords[0],
@@ -23,21 +23,21 @@ class Map {
 			class: 'city',
 			'data-region': region.toUpperCase(),
 			'data-name': name,
-			id: region+'-city-'+name
+			id: region + '-city-' + name
 		});
 
 		Constants.TARGET.appendChild(element);
 
 		return 1;
-	};
+	}
 
 	// Draw every city to the map (calls Cities.DrawCity)
 	static DrawCities() {
 		for (let region in window.cities)
 			for (let city in window.cities[region])
-				if (window.data.cities[region][city]['population'] > 0) Map.DrawCity(region, city);
+				if (window.data.cities[region][city].population > 0) Map.DrawCity(region, city);
 		return 1;
-	};
+	}
 
 	// Remove cities
 	static EraseCities() {
@@ -45,7 +45,7 @@ class Map {
 		for (let el of elements)
 			Constants.TARGET.removeChild(el);
 		return 0;
-	};
+	}
 
 	// Update cities on map
 	static UpdateCities() {
@@ -53,7 +53,7 @@ class Map {
 		Map.DrawCities();
 		CityEvents.AddListeners();
 		return 0;
-	};
+	}
 
 	// Get HTML Info card for a city when hovered over
 	static CityHtml(region, name) {
@@ -61,16 +61,16 @@ class Map {
 		try {
 			city = window.data.cities[region][name];
 		} catch (e) {
-			throw 'Error: cannot locate city "'+name+'" in region "'+region+'" (Map.CityHtml)';
+			throw 'Error: cannot locate city "' + name + '" in region "' + region + '" (Map.CityHtml)';
 		}
 
-		let html = '<table id="map-city-info" data-region="'+region+'" data-name="'+name+'">';
+		let html = '<table id="map-city-info" data-region="' + region + '" data-name="' + name + '">';
 		html += '<tr><th>Name: </th><td><img src="' + Map.GetFlagURL(region) + '" title="' + region + '" class="flag_ref" /> ' + window.display(name) + '</td></tr>';
 		let pop = Math.round((city.population / city.population_100p) * 100);
 		html += '<tr><th>Pop.: </th><td><meter min="0" low="30" high="75" optimum="90" max="100" value="' + pop + '" /></tr></table>';
 
 		return html;
-	};
+	}
 
 	// Draw silos on to the map
 	static DrawSilos() {
@@ -79,8 +79,8 @@ class Map {
 		let i = 0;
 		for (let silo of silos) {
 			let el = create_svg_element('rect', {
-				x: silo.x - Constants.SILO_W/2,
-				y: silo.y + Constants.SILO_H/2,
+				x: silo.x - Constants.SILO_W / 2,
+				y: silo.y + Constants.SILO_H / 2,
 				width: Constants.SILO_W,
 				height: Constants.SILO_H,
 				class: 'silo',
@@ -91,7 +91,7 @@ class Map {
 			Constants.TARGET.appendChild(el);
 			i += 1;
 		}
-	};
+	}
 
 	// Remove all silos from the map
 	static EraseSilos() {
@@ -99,21 +99,21 @@ class Map {
 		for (let el of elements)
 			Constants.TARGET.removeChild(el);
 		return 0;
-	};
+	}
 
 	static UpdateSilos() {
 		Map.EraseSilos();
 		Map.DrawSilos();
 		SiloEvents.AddListeners();
 		return 0;
-	};
+	}
 
 	// Silo state has changed
 	static SilosChanged() {
 		Map.UpdateSilos();
 		ControlBoard.SiloListOverview();
 		return 0;
-	};
+	}
 
 	// Get HTML display of a silo
 	static SiloHtml(id) {
@@ -121,15 +121,15 @@ class Map {
 		try {
 			silo = window.data.silos[window.me][id];
 		} catch (e) {
-			throw 'Error: cannot locate silo number '+id+' (Map.SiloHtml)';
+			throw 'Error: cannot locate silo number ' + id + ' (Map.SiloHtml)';
 		}
 
-		let html = '<table id="map-silo-info" data-id="'+id+'">';
+		let html = '<table id="map-silo-info" data-id="' + id + '">';
 		html += '<tr><th>Location: </th><td><img src="' + Map.GetFlagURL(silo.country) + '" class="flag_ref" /> ' + silo.country + '</td></tr>';
 		html += '<tr><th>Health: </th><td><meter min="0" low="30" high="75" optimum="90" max="100" value="' + silo.health + '" /></tr>';
 
 		return html + '</table>';
-	};
+	}
 
 	// Return all silos which contain a given type (contents)
 	static GetSilosWith(...type) {
@@ -145,7 +145,7 @@ class Map {
 			i += 1;
 		}
 		return obj;
-	};
+	}
 
 	// Draw defence posts on to the map
 	static DrawDefences() {
@@ -154,8 +154,8 @@ class Map {
 		let i = 0;
 		for (let post of defences) {
 			let el = create_svg_element('rect', {
-				x: post.x - Constants.DEFENCE_W/2,
-				y: post.y + Constants.DEFENCE_H/2,
+				x: post.x - Constants.DEFENCE_W / 2,
+				y: post.y + Constants.DEFENCE_H / 2,
 				width: Constants.DEFENCE_W,
 				height: Constants.DEFENCE_H,
 				class: 'defence_post',
@@ -166,21 +166,21 @@ class Map {
 			Constants.TARGET.appendChild(el);
 			i += 1;
 		}
-	};
+	}
 
 	// Remove all silos from the map
 	static EraseDefences() {
 		let elements = Constants.TARGET.querySelectorAll('.defence_post');
 		for (let el of elements) Constants.TARGET.removeChild(el);
 		return 0;
-	};
+	}
 
 	static UpdateDefences() {
 		Map.EraseDefences();
 		Map.DrawDefences();
 		DefenceEvents.AddListeners();
 		return 0;
-	};
+	}
 
 	// Get HTML display of a defence post
 	static DefencePostHtml(id) {
@@ -191,21 +191,21 @@ class Map {
 			throw 'Error: cannot locate defence post number ' + id + ' (Map.DefencePostHtml)';
 		}
 
-		let html = '<table id="map-defence-info" data-id="'+id+'">';
+		let html = '<table id="map-defence-info" data-id="' + id + '">';
 		html += '<tr><th>Location: </th><td><img src="' + Map.GetFlagURL(post.country) + '" class="flag_ref" /> ' + post.country + '</td></tr>';
 		html += '<tr><th>Health: </th><td><meter min="0" low="30" high="75" optimum="90" max="100" value="' + post.health + '" /></tr>';
 
 		return html + '</table>';
-	};
+	}
 
 	// Pulses an element on-screen
 	static PulseElement(element, time) {
 		Constants.TARGET.appendChild(element);
-		setTimeout(function() {
+		setTimeout(function () {
 			Constants.TARGET.removeChild(element);
 		}, time);
 		return 0;
-	};
+	}
 
 	// Pulse an explosion on the map
 	static PulseExplosion(coords, r, klass = 'explosion') {
@@ -217,7 +217,7 @@ class Map {
 		});
 		Map.PulseElement(el, window.gamevars.pulse_explosion);
 		return 0;
-	};
+	}
 
 	// Colour allied countries
 	static ColourAllies() {
@@ -231,7 +231,7 @@ class Map {
 		for (let country of window.data.enemy.allies)
 			document.querySelector('svg .country[data-id="' + country + '"]').setAttribute('fill', window.data.enemy.ally_colour);
 		return 0;
-	};
+	}
 
 	// Allies have changed; update things
 	static AlliesChanged() {
@@ -242,7 +242,7 @@ class Map {
 			ControlBoard.LoadCountryInfo(viewing);
 		}
 		return 0;
-	};
+	}
 
 	// Returns array of all silo indexes wherein the silo is in a certain radius of a point
 	static GetSilosInRange(x, y, r, alive = true, player = 'all') {
@@ -255,12 +255,12 @@ class Map {
 			let indexes = [];
 			for (let i = 0; i < window.data.silos[player].length; i += 1) {
 				let silo = window.data.silos[player][i];
-				if ((silo.x >= x-r && silo.x <= x+r) && (silo.y >= y-r && silo.y <= y+r) && ((alive && window.data.silos[player][i].health > 0) || !alive))
+				if ((silo.x >= x - r && silo.x <= x + r) && (silo.y >= y - r && silo.y <= y + r) && ((alive && window.data.silos[player][i].health > 0) || !alive))
 					indexes.push(i);
 			}
 			return indexes;
 		}
-	};
+	}
 
 	// Returns array of all city names wherein the city is in a certain radius of a point
 	// Alive - does city need to be 'alive' ??
@@ -275,52 +275,52 @@ class Map {
 			for (let city in window.data.cities[region]) {
 				if (city == 'owner') continue;
 				let loc = window.cities[region.toLowerCase()][city];
-				if ((loc[0] >= x-r && loc[0] <= x+r) && (loc[1] >= y-r && loc[1] <= y+r) && ((alive && window.data.cities[region][city].population > 0) || !alive))
+				if ((loc[0] >= x - r && loc[0] <= x + r) && (loc[1] >= y - r && loc[1] <= y + r) && ((alive && window.data.cities[region][city].population > 0) || !alive))
 					indexes.push(city);
 			}
 			return indexes;
 		}
-	};
+	}
 
 	// Returns array of all cevents wherein the events are in a certain radius from a point
 	static GetEventsInRange(x, y, r, from_user = 'any') {
 		let IDs = [];
 		for (let ID in Events.List) {
 			let loc = Events.List[ID].coords;
-			if ((loc[0] >= x-r && loc[0] <= x+r) && (loc[1] >= y-r && loc[1] <= y+r) && (Events.List[ID].from_user == from_user || from_user == 'any'))
+			if ((loc[0] >= x - r && loc[0] <= x + r) && (loc[1] >= y - r && loc[1] <= y + r) && (Events.List[ID].from_user == from_user || from_user == 'any'))
 				IDs.push(ID);
 		}
 		return IDs;
-	};
+	}
 
 	// Highlight the given country
 	static HighlightCountry(code) {
 		Constants.TARGET.querySelector('.country[data-id="' + code + '"]').classList.add('highlighted');
 		return 0;
-	};
+	}
 
 	// Remove the highlight from the given country
 	static UnHighlightCountry(code) {
 		Constants.TARGET.querySelector('.country[data-id="' + code + '"]').classList.remove('highlighted');
 		return 0;
-	};
+	}
 
 	// Highlight the given silo
 	static HighlightSilo(id) {
 		Constants.TARGET.querySelector('.silo#' + window.me + '-silo-' + id).classList.add('highlighted');
 		return 0;
-	};
+	}
 
 	// Remove the highlight from the given silo
 	static UnHighlightSilo(id) {
 		Constants.TARGET.querySelector('.silo#' + window.me + '-silo-' + id).classList.remove('highlighted');
 		return 0;
-	};
+	}
 
 	// Provided a country code, return path to the flag image
 	static GetFlagURL(code) {
 		return 'flags/' + code + '.svg';
-	};
+	}
 
 	// Get info of provided element
 	// Return array(2) {type, country}
@@ -344,7 +344,7 @@ class Map {
 			Map.Winner(window.me);
 		else
 			return 0;
-	};
+	}
 
 	// There is a winner...
 	static Winner(victor) {
@@ -371,10 +371,9 @@ class Map {
 			el.parentNode.replaceChild(newel, el);
 
 			// Ignore victor's home region
-			if (id == window.data.vars[victor].region)
-				{ }
+			if (id == window.data.vars[victor].region) { }
 			// If loser's home region, colour darker
-			else if (id ==  window.data.vars[loser].region)
+			else if (id == window.data.vars[loser].region)
 				newel.setAttribute('fill', window.data.vars[victor].colour);
 			else
 				newel.setAttribute('fill', window.data.vars[victor].ally_colour);
@@ -401,7 +400,7 @@ class Map {
 		if (window.data.vars[victor].allies.length > 0) {
 			document.getElementById('control_board').innerHTML += '<br><br><b>With thanks to its allies...</b><br>';
 			for (let ally of window.data.vars[victor].allies)
-				document.getElementById('control_board').innerHTML += '<img src="' +  Map.GetFlagURL(ally)+ '" class="flag_med" /> &nbsp; ' + getCountryName(ally) + '<br>';
+				document.getElementById('control_board').innerHTML += '<img src="' + Map.GetFlagURL(ally) + '" class="flag_med" /> &nbsp; ' + getCountryName(ally) + '<br>';
 		}
 		document.getElementById('control_board').innerHTML += '<br><br>';
 		document.getElementById('control_board').innerHTML += (victor == window.me ? 'Well Done Sir.' : 'Better Luck Next Time.');
@@ -415,15 +414,15 @@ class Map {
 		}
 
 		return 0;
-	};
+	}
 
 	// Get distance between two points
 	static DistancePoints(p1, p2) {
 		let dx = Number(p1[0]) - Number(p2[0]);
 		let dy = Number(p1[1]) - Number(p2[1]);
-		let d = Math.sqrt((dx*dx) + (dy*dy));
+		let d = Math.sqrt((dx * dx) + (dy * dy));
 		return d;
-	};
+	}
 
 	// Returns array of defence posts with a missile in
 	static GetDefencePostsWith(...missiles) {
@@ -434,7 +433,7 @@ class Map {
 			for (let missile in window.data.defence_posts[window.me][i].contents)
 				if (missiles.indexOf(missile) !== -1) posts.push(i);
 		return posts;
-	};
+	}
 
 	// Gets closest defence point to a set of coordinates
 	static GetDefencePostClosest(coords) {
@@ -454,12 +453,12 @@ class Map {
 		}
 
 		return closest;
-	};
+	}
 
 	// Remove visual circles which represent range of missiles from a given point
 	static RemoveRadiiMarkers() {
 		let els = Constants.TARGET.getElementsByClassName('weapon_radius');
 		while (els[0]) els[0].remove();
 		return 0;
-	};
+	}
 }

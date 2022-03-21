@@ -130,7 +130,7 @@ class Connection {
           // Open game
           if (params.password === game.data.vars.general.password) {
             game.state = "open";
-            game.player_1 = this.token;
+            game.player_1 = this;
             this.socket.emit("goto-game");
           } else {
             this.socket.emit("alert", `Unable to open game - password is incorrect`);
@@ -139,7 +139,7 @@ class Connection {
           // Join game
           if (params.code === game.data.vars.general.join_code) {
             game.state = "full";
-            game.player_2 = this.token;
+            game.player_2 = this;
             this.socket.emit("goto-game");
           } else {
             this.socket.emit("alert", `Unable to join game - game join code is incorrect`);
@@ -153,23 +153,119 @@ class Connection {
 
   /** Init: game.html */
   async _initPlayGame(params) {
-    console.log("Init Play Game")
     const game = Game.getFromID(params.gameID);
-    if (game === undefined || !(params.token === game.player_1 || params.token === game.player_2) || (game.state === "closed" && params.token !== game.player_1)) {
+    if (game === undefined || !(params.token === game.player_1.token || params.token === game.player_2.token) || (game.state === "closed" && params.token !== game.player_1.token)) {
       return null;
     } else {
-      const isAdmin = params.token === game.player_1;
+      const isAdmin = params.token === game.player_1.token;
+      const me = isAdmin ? "player_1" : "player_2";
+
+      if (me === "player_1") game.player_1 = this;
+      else if (me === "player_2") game.player_2 = this;
 
       // LEAVE GAME
       this.socket.on("disconnect", async () => {
-        if (this.token === game.player_1) {
+        this.log(`${me} : disconnected`);
+        if (isAdmin) {
           // without admin, game is inactive
           game.state = "closed";
           game.player_1 = null;
         } else {
-          game.state = "open";
+          if (game.state !== "closed") game.state = "open";
           game.player_2 = null;
         }
+        game.emit("game-state", game.data.state);
+      });
+
+      /** Return data from requested "file" */
+      const getDataFromFile = (file) => {
+        switch (file) {
+          case 'silos.json':
+            return { player_1: game.data["silos-player_1"], player_2: game.data["silos-player_2"] };
+          case "defence_posts.json":
+            return { player_1: game.data["defence_posts-player_1"], player_2: game.data["defence_posts-player_1"] };
+          case "msg_history.txt":
+            return game.data.msg_history;
+          case "ru_cities.json":
+            return game.data.ru_cities;
+          case "us_cities.json":
+            return game.data.us_cities;
+          case "vars.json":
+            return game.data.vars;
+          case "events.json":
+            return game.data.events;
+          default:
+            return undefined;
+        }
+      };
+      /** Update a "file" with data */
+      const updateFileData = (file, data) => {
+        switch (file) {
+          case 'silos.json':
+            game.data["silos-" + me] = data;
+            return true;
+          case "defence_posts.json":
+            game.data["defence_posts-" + me] = data;
+            return true;
+          case "msg_history.txt":
+            game.data.msg_history = data;
+            return true;
+          case "ru_cities.json":
+            game.data.ru_cities = data;
+            return true;
+          case "us_cities.json":
+            game.data.us_cities = data;
+            return true;
+          case "vars.json":
+            game.data.vars = data;
+            return true;
+          case "events.json":
+            game.data.events = data;
+            return true;
+          default:
+            return undefined;
+        }
+      };
+
+      const addUpdate = (file, execCodes = []) => {
+        const fileData = getDataFromFile(file);
+        game.emit("handle-update", { file, fileData, execCodes });
+      };
+
+      // Add update
+      this.socket.on("add-update", ({ file, execCodes }) => {
+        addUpdate(file, execCodes);
+        game.emit("game-state", game.data.state);
+      });
+
+      // Save message history
+      this.socket.on("save-msgs", ({ text, sync }) => {
+        game.data.msg_history = text;
+        if (sync) addUpdate("msg_history.txt", [4]);
+      });
+
+      // Pause game (lost focus)
+      this.socket.on("pause", value => {
+        game.data.ispaused[isAdmin ? "player_1" : "player_2"] = value;
+        game.emit("pause", game.data.ispaused);
+        if (!(game.data.ispaused.player_1 || game.data.ispaused.player_2)) {
+          addUpdate(file);
+          game.emit("game-state", game.data.state);
+        }
+      });
+
+      // Update "file" data
+      this.socket.on("update-data", ({ file, data }) => {
+        updateFileData(file, data);
+      });
+
+      this.socket.on("set-personal-data", params => {
+        if (params.money !== undefined) game.data.vars[me].money = params.money;
+        if (params.income !== undefined) game.data.vars[me].income = params.income;
+      });
+
+      this.socket.on("game-state", () => {
+        game.emit("game-state", game.data.state);
       });
 
       return {
@@ -195,7 +291,6 @@ class Connection {
         me: isAdmin ? "player_1" : "player_2",
         enemy: isAdmin ? "player_2" : "player_1",
         message_old: game.data.msg_history,
-        svg_map: await utils.fread("public/assets/svg_map.svg"),
       };
     }
   }

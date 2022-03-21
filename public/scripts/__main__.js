@@ -2,6 +2,7 @@ function main() {
   const socket = io();
   window.socket = socket;
   const params = new URLSearchParams(location.search.substring(1)), token = Array.from(params)?.[0]?.[0], gameID = params.get("id");
+  window.token = token;
 
   socket.on("alert", text => alert(text));
   socket.on("id-ok", data => {
@@ -97,8 +98,7 @@ function main() {
       }
 
       // Populate some HTML
-      document.getElementById("map_div").innerHTML = data.svg_map;
-      document.querySelectorAll(".join_code").forEach(e => e.innerText = data.data.vars.join_code);
+      document.querySelectorAll(".join_code").forEach(e => e.innerText = data.data.vars.general.join_code);
       document.getElementById("main_time").innerText = getTime();
       let btnLeave = document.getElementById("btn_leave_game");
       btnLeave.addEventListener("click", () => location.href = "/menu.html?" + token);
@@ -134,7 +134,7 @@ function main() {
 }
 
 // Initiate the game
-function _init_() {
+async function _init_() {
   // Load constants
   Constants.TARGET = document.querySelector('svg#map');
   Constants.TARGET_W = Constants.TARGET.width.baseVal.value;
@@ -159,8 +159,26 @@ function _init_() {
   document.querySelector('svg .country[data-id="US"]').setAttribute('fill', window.data.vars[window.data.cities.us.owner].colour);
 
   // Check game/update state
-  _update_();
-  Constants.GAME_UPDATE_INTERVAL = setInterval(_update_, window.gamevars.update_state_time);
+  if (Constants.DO_FOCUS_NEEDED) {
+    document.addEventListener("blur", () => Update.HandleFocusChange(false));
+    document.addEventListener("focus", () => Update.HandleFocusChange(true));
+  }
+  Update.Init();
+  Constants.GAME_UPDATE_INTERVAL = setInterval(() => {
+    document.getElementById('main_time').innerText = getTime();
+  }, window.gamevars.update_state_time);
+
+  // Load sounds
+  await Sounds.create("explosion_srm", 'sounds/explosion_srm.ogg');				// Short Range Missile explosion
+  await Sounds.create("explosion_lrm", 'sounds/explosion_lrm.ogg');				// Long Range MIssile explosion
+  await Sounds.create("explosion_dm", 'sounds/explosion_dm.ogg');				// Defence Missile explosion
+  await Sounds.create("explode_water", 'sounds/explode_water.ogg');				// Explosion in water
+  await Sounds.create("tsar", 'sounds/tsar.ogg');
+  await Sounds.create("collapse", 'sounds/collapse.ogg');						// Silo destroyed sound
+  await Sounds.create("death_city", 'sounds/death_city.ogg');					// City destroyed sound
+  await Sounds.create("beep", 'sounds/beep.ogg');
+  await Sounds.create("buzzer", 'sounds/buzzer.ogg');
+  await Sounds.create("launch", 'sounds/launch.ogg');
 
   // If a player is victorious...
   if (window.data.vars.winner != null) {
@@ -170,7 +188,6 @@ function _init_() {
 
   Update.PopupSiloData();
   Calculations.WeaponSpeeds();
-  Sounds.Init();
 
   Map.DrawDefences();
   Map.DrawCities();
@@ -202,14 +219,9 @@ function _init_() {
   if (window.data.message_old == '')
     ControlBoard.ShowMsg('Welcome to MAD Missile Destruction!<br><small>You are the President of <img src="' + Map.GetFlagURL(window.data.me.region) + '" class="flag_ref" /> ' + getCountryName(window.data.me.region) + '. The aim is to obliterate the opponent, <img  src="' + Map.GetFlagURL(window.data.enemy.region) + '" class="flag_ref" /> ' + getCountryName(window.data.enemy.region) + '.<br>Build silos, launch missiles, defend enemy attacks, get allies, destroy enemy cities to win (black dots)</small>', null, true, false);
   else ControlBoard.ShowMsg(window.data.message_old, null, true, false);
-}
 
-// Routine game update
-function _update_() {
-  Update.RoutineCheck();
-  if (Constants.DO_FOCUS_NEEDED) Update.CheckFocus();
-  document.getElementById('main_time').innerText = getTime();
-  return 0;
+  socket.emit("game-state");
+  Update.Add("events.json");
 }
 
 // Before the tab is closed...

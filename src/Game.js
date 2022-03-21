@@ -7,8 +7,8 @@ class Game {
     this.id = id;
     this.data = undefined;
 
-    this.player_1 = null;
-    this.player_2 = null;
+    this.player_1 = null; // Connection class
+    this.player_2 = null; // Connection class
   }
 
   /** Game name */
@@ -37,6 +37,12 @@ class Game {
   /** Delete game file */
   async deleteData() {
     return await utils.fdelete(this.fpath);
+  }
+
+  /** Emit event to both sockets */
+  emit(event, ...args) {
+    if (this.player_1) this.player_1.socket.emit(event, ...args);
+    if (this.player_2) this.player_2.socket.emit(event, ...args);
   }
 
   /** Create and Game object with game data !NOTE! data is not saved to file. Call Game.writeData() to save. */

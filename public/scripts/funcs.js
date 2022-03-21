@@ -1,9 +1,9 @@
 // Create SVG element
 function create_svg_element(name, attrs = null, text = null) {
-	var el = document.createElementNS("http://www.w3.org/2000/svg", name);
-	if (attrs !== null) for (var name in attrs) el.setAttributeNS(null, name, attrs[name]);
+	let el = document.createElementNS("http://www.w3.org/2000/svg", name);
+	if (attrs !== null) for (let name in attrs) el.setAttributeNS(null, name, attrs[name]);
 	if (text !== null) {
-		for (var line of text) {
+		for (let line of text) {
 			if (line == "$n") el.appendChild(createSVGElement("br")); else {
 				let txt = document.createTextNode(line);
 				el.appendChild(txt);
@@ -23,7 +23,7 @@ function getTime() {
 function rand(min, max) {
 	// Exclusive max
 	return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+}
 
 // Put commas in number
 function commas(x, dp = undefined) {
@@ -56,7 +56,7 @@ function getInitials(text, nicify = false) {
 	let initials = '';
 	for (let word of text.split(/\s+/g)) initials += word[0].toUpperCase();
 	return initials;
-};
+}
 
 function discard(victim, array) {
 	array.splice(array.indexOf(victim), 1);
@@ -87,7 +87,7 @@ function getCountryOwner(region) {
 // Get a country name
 function getCountryName(code) {
 	try {
-		return window.countries[code]['name'];
+		return window.countries[code].name;
 	} catch (e) {
 		return 'N/A';
 	}
@@ -121,7 +121,6 @@ function dump(v, typeonly = false, recursionLevel = 0) {
 			return (typeonly ? 'bool' : 'bool(' + v + ')');
 		case "string":
 			return (typeonly ? 'string' : 'string(' + v.length + ') "' + v + '"');
-			break;
 		case "object":
 			//If using jQuery: if ($.isArray(v))
 			//If using IE: if (isArray(v))
@@ -157,7 +156,6 @@ function dump(v, typeonly = false, recursionLevel = 0) {
 			return 'function';
 		default:
 			return (typeonly ? 'unknown' : v);
-			break;
 	}
 
 	return out;
@@ -174,11 +172,11 @@ function removeElement(selector) {
 	let els = document.querySelectorAll(selector);
 	for (let el of els) el.parentNode.removeChild(el);
 	return els.length;
-};
+}
 
 // ENcodes <, >, ', " for safe-html
 function htmlToText(html) {
-	html = html.replace(/\</g, '_$TO$_');
+	html = html.replace(/</g, '_$TO$_');
 	html = html.replace(/\>/g, '_$TC$_');
 	html = html.replace(/\'/g, '_$SM$_');
 	html = html.replace(/\"/g, '_$DM$_');

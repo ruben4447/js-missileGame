@@ -9,14 +9,14 @@ class ControlBoard {
 		document.getElementById('info_health_meter').setAttribute('title', health + '%');
 		ControlBoard.Money();
 		return 0;
-	};
+	}
 
 	// Update money stuff
 	static Money() {
 		document.getElementById('info_money').innerText = commas(window.data.me.money);
 		document.getElementById('info_income').innerHTML = commas(window.data.me.income) + ' <small>/ ' + (window.gamevars.update_income_time / 1000) + 's</small>';
 		return 0;
-	};
+	}
 
 	// Defence bit
 	static Defence() {
@@ -424,7 +424,7 @@ class ControlBoard {
 		else document.getElementById('info_message').innerHTML = msg;
 
 		if (dump(pulse, true) == 'int')
-			setTimeout(function(){
+			setTimeout(function () {
 				document.getElementById('info_message').innerHTML = '';
 			}, pulse);
 		return 0;

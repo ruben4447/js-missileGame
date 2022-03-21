@@ -7,18 +7,18 @@ const clamp = (min, max, n) => {
 };
 
 /** Class containing static control functions for the Sound objects */
-class SoundsJS {
+class Sounds {
   /** Stop all registered sounds */
   static stop(name = undefined) {
-    for (const sound in SoundsJS.sounds) {
-      if (SoundsJS.sounds.hasOwnProperty(sound) && (name === undefined || name === sound)) {
-        SoundsJS.sounds[sound].stop();
+    for (const sound in Sounds.sounds) {
+      if (Sounds.sounds.hasOwnProperty(sound) && (name === undefined || name === sound)) {
+        Sounds.sounds[sound].stop();
       }
     }
-    for (let i = SoundsJS._playing.length - 1; i >= 0; i--) {
-      if (name === undefined || SoundsJS._playing[i].playingName === name) {
-        SoundsJS._playing[i].stop();
-        SoundsJS._playing.splice(i, 1);
+    for (let i = Sounds._playing.length - 1; i >= 0; i--) {
+      if (name === undefined || Sounds._playing[i].playingName === name) {
+        Sounds._playing[i].stop();
+        Sounds._playing.splice(i, 1);
       }
     }
   }
@@ -28,7 +28,7 @@ class SoundsJS {
    * @param name    Associated name of sound
    */
   static get(name) {
-    return SoundsJS.sounds[name];
+    return Sounds.sounds[name];
   }
   /**
    * Get a sound using Sounds.Get, clone and play it
@@ -37,12 +37,12 @@ class SoundsJS {
    * @return Sound played?
    */
   static play(name) {
-    const sound = SoundsJS.get(name);
+    const sound = Sounds.get(name);
     if (sound) {
       const obj = sound.clone();
       obj.play();
       obj.playingName = name;
-      SoundsJS._playing.push(obj);
+      Sounds._playing.push(obj);
       return true;
     }
     else {
@@ -52,18 +52,18 @@ class SoundsJS {
   /** Same as Sounds.play, but makes sure only one instance of the sound is playing */
   static playOnce(name) {
     let playing = false;
-    for (let i = SoundsJS._playing.length - 1; i > -1; i--) {
-      if (SoundsJS._playing[i].playingName === name && SoundsJS._playing[i].isPlaying) {
+    for (let i = Sounds._playing.length - 1; i > -1; i--) {
+      if (Sounds._playing[i].playingName === name && Sounds._playing[i].isPlaying) {
         if (playing) {
-          SoundsJS[i].stop();
-          SoundsJS._playing.splice(i, 1);
+          Sounds[i].stop();
+          Sounds._playing.splice(i, 1);
         } else {
           playing = true;
         }
       }
     }
     if (!playing) {
-      SoundsJS.play(name);
+      Sounds.play(name);
     }
     return !playing;
   }
@@ -74,10 +74,10 @@ class SoundsJS {
    * @param  loadNow    Fetch sound data from file now?
    */
   static async create(name, path, loadNow = true) {
-    if (SoundsJS.sounds[name] == undefined) {
-      SoundsJS.sounds[name] = new SoundJS(path);
+    if (Sounds.sounds[name] == undefined) {
+      Sounds.sounds[name] = new Sound(path);
       if (loadNow) {
-        return await SoundsJS.sounds[name].load();
+        return await Sounds.sounds[name].load();
       }
       else {
         return void 0;
@@ -94,7 +94,7 @@ class SoundsJS {
    * @default lang = "en-Gb"
    */
   static say(speech, lang = 'en-GB') {
-    if (SoundsJS.isEnabled) {
+    if (Sounds.isEnabled) {
       let msg = new SpeechSynthesisUtterance();
       msg.lang = lang;
       msg.text = speech;
@@ -105,30 +105,30 @@ class SoundsJS {
    * Enable sound to be played
    */
   static enable() {
-    SoundsJS.isEnabled = true;
+    Sounds.isEnabled = true;
   }
   /**
    * Disable sound from being played
    * - Pause all active sounds
    */
   static disable() {
-    SoundsJS.isEnabled = false;
-    for (const sound in SoundsJS.sounds) {
-      if (SoundsJS.sounds.hasOwnProperty(sound)) {
-        SoundsJS.sounds[sound].pause();
+    Sounds.isEnabled = false;
+    for (const sound in Sounds.sounds) {
+      if (Sounds.sounds.hasOwnProperty(sound)) {
+        Sounds.sounds[sound].pause();
       }
     }
   }
 }
 /** Object of created Sound objects */
-SoundsJS.sounds = {};
+Sounds.sounds = {};
 /** Is the playing of sounds currently enabled? */
-SoundsJS.isEnabled = true;
-SoundsJS._playing = [];
+Sounds.isEnabled = true;
+Sounds._playing = [];
 /**
  * Contains an indivdual track or sound
  */
-class SoundJS {
+class Sound {
   /**
    * @param path     Path to sound file
    * @param fetch   Fetch sound data immediatly?
@@ -146,7 +146,7 @@ class SoundJS {
   }
   /** Copy sound object */
   clone() {
-    const obj = new SoundJS(this.path, false);
+    const obj = new Sound(this.path, false);
     obj.buffer = this.buffer;
     obj.loop(this.loop());
     return obj;
@@ -184,7 +184,7 @@ class SoundJS {
    */
   play() {
     return new Promise(async (resolve, reject) => {
-      if (!SoundsJS.isEnabled || this.isPlaying) {
+      if (!Sounds.isEnabled || this.isPlaying) {
         resolve(false);
         return;
       }
@@ -279,7 +279,7 @@ class SoundJS {
 /**
  * Create a beeping noise
  */
-class BeepJS {
+class Beep {
   constructor() {
     this._volume = 1;
     this._frequency = 500;

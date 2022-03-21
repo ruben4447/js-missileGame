@@ -1,6 +1,13 @@
 window.addEventListener("load", function () {
   const socket = io(); // Setup socket
-  const token = Array.from(new URLSearchParams(location.search.substring(1)))?.[0]?.[0];
+  const params = Array.from(new URLSearchParams(location.search.substring(1)));
+  const token = params?.[0]?.[0];
+
+  for (let i = 1; i < params.length; i++) {
+    if (params[i][0] === "closed") alert(`Admin has left the game`);
+    else if (params[i][0] === "gone") alert(`Game has been deleted`);
+    else if (params[i][0] === "locked") alert(`Game has been locked`);
+  }
 
   // Setup event handlers
   socket.on("alert", txt => alert(txt));

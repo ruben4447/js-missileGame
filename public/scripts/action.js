@@ -1,10 +1,10 @@
 // Stores current states for Action.Current
-class ActionState {
-	static None = 0;
-	static BuildSilo = 1;
-	static BuildDefence = 2;
-	static PickTarget = 3;
-}
+const ActionState = {
+	None: 0,
+	BuildSilo: 1,
+	BuildDefence: 2,
+	PickTarget: 3,
+};
 
 class Action {
 	static Current = ActionState.None; // Is there an action running?
@@ -12,7 +12,7 @@ class Action {
 	// Provides HTML for the 'cancel action' button
 	static CancelActionBtn(wrapper_id, text = 'Cancel Action') {
 		return '<button class="cancel_action btn_red" onclick="Action.Cancel(\'' + wrapper_id + '\')">' + text + '</button>';
-	};
+	}
 
 	// Cancel the current action
 	static Cancel(btn_wrapper_id = false) {
@@ -25,7 +25,7 @@ class Action {
 			Active.LaunchingFromDefence = false;
 		}
 		return 0;
-	};
+	}
 
 	// Master - Cancel ALL actions
 	static CancelAll() {
@@ -35,10 +35,10 @@ class Action {
 		if (Active.LaunchingType != null) Map.RemoveRadiiMarkers();
 		Map.SetState('idle');
 		return 0;
-	};
+	}
 
 	// Build silo button is pressed
-	static BuildSilo(coords = false, cid) {
+	static BuildSilo(coords = false, cid = undefined) {
 		// (1) Check if user has enough money
 		if (window.data.me.money < window.prices.silo) {
 			window.alert('You do not have enogh money to build a new silo!\nYou need: ' + window.commas(window.prices.silo) + '\nYou have: ' + window.commas(window.data.me.money));
@@ -72,13 +72,13 @@ class Action {
 			ControlBoard.SiloListOverview();
 		}
 		return 0;
-	};
+	}
 
 	// 'Delete' a silo
 	static DecomissionSilo(num) {
 		if (window.confirm('Are you sure you want to decomission this silo?\nIt cost ' + window.commas(window.prices.silo) + ' but you won\'t get any money back.\nYou will also lose all weapons stored inside the silo!') !== true) return 0;
 		window.data.silos[window.me].splice(num, 1);
-		Sounds.Play('collapse');
+		Sounds.play('collapse');
 
 		// If decomissioned, player must have had the popup_control_board open; close it
 		ControlBoardEvents.ClosePopup();
@@ -89,10 +89,10 @@ class Action {
 		Update.File(Constants.AUTH, 'vars.json', window.data.vars);
 
 		return 0;
-	};
+	}
 
 	// Build a defence post (DefenceEvents.ClickBuildDefence)
-	static BuildDefence(coords = false, cid) {
+	static BuildDefence(coords = false, cid = undefined) {
 		// (1) Check if user has enough money
 		if (window.data.me.money < window.prices.defence_post) {
 			window.alert('You do not have enogh money to build a new defence post!\nYou need: ' + window.commas(window.prices.defencepost) + '\nYou have: ' + window.commas(window.data.me.money));
@@ -122,7 +122,7 @@ class Action {
 			}
 		}
 		return 0;
-	};
+	}
 
 	// Get an ally (called by ControlBoardEvents.ClickGetAlly)
 	static AddAlly(cid) {
@@ -132,7 +132,7 @@ class Action {
 		else if (window.data.enemy.allies.indexOf(cid) !== -1)
 			alert(window.countries[cid].name + ' is an ally of the enemy!');
 		else {
-			console.log('svg .country[data-id="' + cid.toUpperCase() + '"]')
+			console.log('svg .country[data-id="' + cid.toUpperCase() + '"]');
 			window.data.me.money -= Calculations.GetAllyCost(cid);
 			window.data.me.allies.push(cid);
 			document.querySelector('svg .country[data-id="' + cid.toUpperCase() + '"]').setAttribute('fill', window.data.me.ally_colour);
@@ -144,7 +144,7 @@ class Action {
 			ControlBoard.Info();
 		}
 		return 0;
-	};
+	}
 
 	// Sever an ally (get the small sum of the countries' GDP)
 	static SeverAlly(cid, sudo = false) {
@@ -160,20 +160,20 @@ class Action {
 			extra = '\n\nYou will also lose the ' + window.commas(siloCount) + ' silo(s) that you own in this country...';
 
 		// Ask for comfirmation
-		if (sudo || window.confirm('Are you sure you want to sever your bond with ' + window.countries[cid]['name'] + '?\nYou will only get the small cash sum of ' + window.commas(window.countries[cid]['gdp']) + '!' + extra)) {
-			let sum = window.countries[cid]['gdp'];
+		if (sudo || window.confirm('Are you sure you want to sever your bond with ' + window.countries[cid].name + '?\nYou will only get the small cash sum of ' + window.commas(window.countries[cid].gdp) + '!' + extra)) {
+			let sum = window.countries[cid].gdp;
 			window.data.me.money += sum;
 			window.discard(cid, window.data.me.allies);
 
 			// Remove all silos in this country
 			if (siloCount > 0) {
 				for (let i = 0; i < window.data.silos[window.me].length;) {
-					if (window.data.silos[window.me][i]['country'] == cid)
+					if (window.data.silos[window.me][i].country == cid)
 						window.data.silos[window.me].splice(i, 1);
 					else i += 1;
 				}
 				Map.UpdateSilos();
-				Update.File(Constants.AUTH, 'silos.json', window.data.silos); Update.Add('silos.json');Update.Add('silos.json');
+				Update.File(Constants.AUTH, 'silos.json', window.data.silos); Update.Add('silos.json'); Update.Add('silos.json');
 				Update.Add('silos.json');
 			}
 			Update.File(Constants.AUTH, 'vars.json', window.data.vars);
@@ -183,7 +183,7 @@ class Action {
 			ControlBoard.Money();
 		}
 		return 0;
-	};
+	}
 
 	// Buy a weapon
 	static BuyWeapon(container, weapon, buildingID) {
@@ -193,7 +193,7 @@ class Action {
 
 		// Check if have enough money
 		else if (window.data.me.money < window.prices[weapon])
-			alert("Cannot purchase " + window.display(weapon) + " as you do not have enought money\nYou need: " + window.commas(window.prices[weapon]) + "\nYou have: " + window.commas(window.data.me.money))
+			alert("Cannot purchase " + window.display(weapon) + " as you do not have enought money\nYou need: " + window.commas(window.prices[weapon]) + "\nYou have: " + window.commas(window.data.me.money));
 
 		// Check is silo exists
 		else {
@@ -206,13 +206,13 @@ class Action {
 						alert("Container silo doesn't exist");
 						return 0;
 					}
-					if (window.data.silos[window.me][buildingID]['contents'][weapon] == null)
-						window.data.silos[window.me][buildingID]['contents'][weapon] = 1;
+					if (window.data.silos[window.me][buildingID].contents[weapon] == null)
+						window.data.silos[window.me][buildingID].contents[weapon] = 1;
 					else
-						window.data.silos[window.me][buildingID]['contents'][weapon] += 1;
+						window.data.silos[window.me][buildingID].contents[weapon] += 1;
 
 					// Sort weapon contents alphabetically (easy to find weapons)
-					window.data.silos[window.me][buildingID]['contents'] = sortObject(window.data.silos[window.me][buildingID]['contents']);
+					window.data.silos[window.me][buildingID].contents = sortObject(window.data.silos[window.me][buildingID].contents);
 
 					if (Active.SiloViewing == buildingID)
 						SiloEvents.ClickOn(buildingID);
@@ -225,13 +225,13 @@ class Action {
 						alert("Container defence post doesn't exist");
 						return 0;
 					}
-					if (window.data.defence_posts[window.me][buildingID]['contents'][weapon] == null)
-						window.data.defence_posts[window.me][buildingID]['contents'][weapon] = 1;
+					if (window.data.defence_posts[window.me][buildingID].contents[weapon] == null)
+						window.data.defence_posts[window.me][buildingID].contents[weapon] = 1;
 					else
-						window.data.defence_posts[window.me][buildingID]['contents'][weapon] += 1;
+						window.data.defence_posts[window.me][buildingID].contents[weapon] += 1;
 
 					// Sort weapon contents alphabetically (easy to find weapons)
-					window.data.defence_posts[window.me][buildingID]['contents'] = sortObject(window.data.defence_posts[window.me][buildingID]['contents']);
+					window.data.defence_posts[window.me][buildingID].contents = sortObject(window.data.defence_posts[window.me][buildingID].contents);
 
 					if (Active.DefencePostViewing == buildingID)
 						DefenceEvents.ClickOn(buildingID);
@@ -244,7 +244,7 @@ class Action {
 			}
 		}
 		return 0;
-	};
+	}
 
 	// Select target for a weapons
 	// isDefence - via 'Defence' section on panel?
@@ -274,7 +274,7 @@ class Action {
 
 			return 0;
 		}
-	};
+	}
 
 	// Launch a weapon
 	static Launch() {
@@ -316,7 +316,7 @@ class Action {
 					target_country: target[1],
 					target_coords: coords,
 					target_user: window.getCountryOwner(target[1]),
-					from_country: window.data.silos[window.me][from]['country'],
+					from_country: window.data.silos[window.me][from].country,
 					from_user: window.me,
 					from_silo: from,
 					from_coords: from_coords,
@@ -343,7 +343,7 @@ class Action {
 					target_country: target[1],
 					target_coords: coords,
 					target_user: window.enemy,
-					from_country: window.data.defence_posts[window.me][from]['country'],
+					from_country: window.data.defence_posts[window.me][from].country,
 					from_user: window.me,
 					from_silo: from,
 					from_coords: from_coords,
@@ -358,8 +358,8 @@ class Action {
 		Map.RemoveRadiiMarkers();
 		if (Active.LaunchingFromDefence) {
 			// Update weapon stock
-			window.data.defence_posts[window.me][from]['contents'][weapon] -= (istype(Active.LaunchingCount, 'int') ? Active.LaunchingCount : 1);
-			if (window.data.defence_posts[window.me][from]['contents'][weapon] < 1) delete window.data.defence_posts[window.me][from]['contents'][weapon];
+			window.data.defence_posts[window.me][from].contents[weapon] -= (istype(Active.LaunchingCount, 'int') ? Active.LaunchingCount : 1);
+			if (window.data.defence_posts[window.me][from].contents[weapon] < 1) delete window.data.defence_posts[window.me][from].contents[weapon];
 
 			Update.File(Constants.AUTH, 'defence_posts.json', window.data.defence_posts); Update.Add('defence_posts.json');
 			ControlBoard.Defence();
@@ -370,15 +370,15 @@ class Action {
 
 				// Set timeout until cooldown ends
 				let siloid = Active.LaunchingFrom;
-				setTimeout(function() {
+				setTimeout(function () {
 					Active.SiloCooldown[siloid] = false;
 					if (Active.SiloViewing == siloid) SiloEvents.ClickOn(siloid);
 				}, window.weapons[obj.weapon].cooldown);
 			}
 
 			// Update weapon stock
-			window.data.silos[window.me][from]['contents'][weapon] -= (istype(Active.LaunchingCount, 'int') ? Active.LaunchingCount : 1);
-			if (window.data.silos[window.me][from]['contents'][weapon] < 1) delete window.data.silos[window.me][from]['contents'][weapon]
+			window.data.silos[window.me][from].contents[weapon] -= (istype(Active.LaunchingCount, 'int') ? Active.LaunchingCount : 1);
+			if (window.data.silos[window.me][from].contents[weapon] < 1) delete window.data.silos[window.me][from].contents[weapon];
 
 			// Save file (only needed locally though, so not UpdateFile)
 			Update.File(Constants.AUTH, 'silos.json', window.data.silos); Update.Add('silos.json');
@@ -394,9 +394,9 @@ class Action {
 		// Clean activity
 		Events.CleanActivity();
 
-		Sounds.Play('buzzer');
+		Sounds.play('buzzer');
 		return 0;
-	};
+	}
 
 	// Abort launch sequence (when click blue button generated from Me.LaunchSequenceForm)
 	static AbortLaunchSequence() {
@@ -406,7 +406,7 @@ class Action {
 		Events.CleanActivity();
 		Map.RemoveRadiiMarkers();
 		return 0;
-	};
+	}
 
 	// When a weapon lands; takes 'klass', a GameEvent class
 	static WeaponLand(klass) {
@@ -422,7 +422,7 @@ class Action {
 
 		// If land in sea...
 		if (klass.target_type == 'sea') {
-			Sounds.Play('explode_water');
+			Sounds.play('explode_water');
 			msg = ['<u>' + display(klass.from_user) + '\'s ' + display(klass.weapon) + '...</u>', '<br>Landed harmlessly in the ocean, causing no damage but killing many fishies :('];
 		}
 		// Else land in country
@@ -432,16 +432,16 @@ class Action {
 			// Explosion sound
 			switch (klass.weapon) {
 				case 'short_range_missile':
-					Sounds.Play('explosion_srm');
+					Sounds.play('explosion_srm');
 					break;
 				case 'long_range_missile':
-					Sounds.Play('explosion_lrm');
+					Sounds.play('explosion_lrm');
 					break;
 				case 'tsar':
-					Sounds.Play('tsar');
+					Sounds.play('tsar');
 					break;
 				default:
-					Sounds.Play('explosion_srm');
+					Sounds.play('explosion_srm');
 			}
 
 			// If not homeland, decrease country health
@@ -492,7 +492,7 @@ class Action {
 					if (window.data.silos[player][index].health <= 0) {
 						adjustor += 1;
 						Map.PulseExplosion([window.data.silos[player][index].x, window.data.silos[player][index].y], weapon.radius);
-						Sounds.Play('collapse');
+						Sounds.play('collapse');
 						window.data.silos[player].splice(index, 1);
 						msg.push('<b>Destroying</b> ' + display(player) + '\'s silo #' + index + '');
 					} else {
@@ -541,7 +541,7 @@ class Action {
 					if (owner != null) window.data.vars[owner].population -= impact;
 
 					if (window.data.cities[region][city].population <= 0) {
-						Sounds.Play('city_death');
+						Sounds.play('city_death');
 						Map.PulseExplosion([window.cities[region.toLowerCase()][city][0], window.cities[region.toLowerCase()][city][1]], weapon.radius);
 						msg.push('<small>Destroying</small> <img src="' + Map.GetFlagURL(region) + '" class="flag_ref" /> ' + display(city));
 					} else
@@ -571,7 +571,7 @@ class Action {
 		}
 		ControlBoard.ShowMsg('<span style="color:' + window.data.vars[klass.from_user].colour + '">' + msg.join('<br>') + '</span>', null, true);
 		return 0;
-	};
+	}
 
 	// Destroy all events given (used by defence weaponry)
 	static DestroyEvents(events, explosion = false) {
@@ -579,16 +579,16 @@ class Action {
 			// Play explosion (be careful not to reference 'event' class in coords - else it won't be garbage collected)
 			if (explosion) {
 				Map.PulseExplosion([Events.List[eventid].coords[0], Events.List[eventid].coords[1]], window.gamevars.defence_explode_r, 'explosion_by_defence');
-				Sounds.Play('explosion_dm');
+				Sounds.play('explosion_dm');
 			}
-			if (Constants.TARGET.getElementById('event-line-' + Events.List[eventid].id) != null) Constants.TARGET.getElementById('event-line-' + Events.List[eventid].id).remove()
+			if (Constants.TARGET.getElementById('event-line-' + Events.List[eventid].id) != null) Constants.TARGET.getElementById('event-line-' + Events.List[eventid].id).remove();
 
-			if (Active.SiloViewing == Events.List[eventid].from_silo) SiloEvents.ClickOn(Active.SiloViewing)
+			if (Active.SiloViewing == Events.List[eventid].from_silo) SiloEvents.ClickOn(Active.SiloViewing);
 
 			// Call 'delete': remove all refrences and traces, so garbage collector can reclaim it
 			Events.List[eventid].Delete();
 		}
 		if (Active.PopupViewing == 'events') ControlBoardEvents.ClickEventDetail();
 		return 0;
-	};
+	}
 }
